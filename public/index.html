@@ -1,113 +1,3 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Display OID Values</title>
-    <link rel="stylesheet" href="/style.css" />
-  </head>
-  <body>
-    <div class="m-10">
-      <label for="datepicker">Select Date:</label>
-      <input type="date" id="datepicker" />
-      <button onclick="getImages()">Get Images</button>
-    </div>
-    <div id="alertimg" class="absolute top-0 right-0 p-3"></div>
-
-    <div
-      id="imageList"
-      class="overflow-x-auto flex flex-nowrap flex-row space-x-4 px-3"
-    ></div>
-    <script>
-      function createCustomAlert(message) {
-        const alertDiv = document.createElement("div");
-        alertDiv.setAttribute("role", "alert");
-        alertDiv.classList.add("alert", "alert-error");
-
-        const svgElement = document.createElementNS(
-          "http://www.w3.org/2000/svg",
-          "svg"
-        );
-        svgElement.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-        svgElement.classList.add("stroke-current", "shrink-0", "h-6", "w-6");
-        svgElement.setAttribute("fill", "none");
-        svgElement.setAttribute("viewBox", "0 0 24 24");
-
-        const pathElement = document.createElementNS(
-          "http://www.w3.org/2000/svg",
-          "path"
-        );
-        pathElement.setAttribute("stroke-linecap", "round");
-        pathElement.setAttribute("stroke-linejoin", "round");
-        pathElement.setAttribute("stroke-width", "2");
-        pathElement.setAttribute(
-          "d",
-          "M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-        );
-
-        svgElement.appendChild(pathElement);
-
-        const spanElement = document.createElement("span");
-        spanElement.textContent = message;
-
-        alertDiv.appendChild(svgElement);
-        alertDiv.appendChild(spanElement);
-
-        // Insert the alert into the desired container, e.g., div with id "alertimg"
-        const alertContainer = document.getElementById("alertimg");
-        alertContainer.innerHTML = "";
-        alertContainer.appendChild(alertDiv);
-      }
-
-      function clearCustomAlert() {
-        const alertContainer = document.getElementById("alertimg");
-        alertContainer.innerHTML = "";
-      }
-
-      async function getImages() {
-        const selectedDate = document.getElementById("datepicker").value;
-
-        try {
-          const response = await fetch(`/getid/${selectedDate}`);
-          const base64Values = await response.json();
-
-          const imageList = document.getElementById("imageList");
-          imageList.innerHTML = ""; // Clear existing images
-
-          clearCustomAlert(); // Clear CustomAlert when there are images
-
-          if (base64Values.length === 0) {
-            createCustomAlert("Error! Task failed successfully.");
-            return;
-          }
-
-          for (const value of base64Values) {
-            var imgElement = document.createElement("img");
-            imgElement.src = "data:image/jpeg;base64," + value;
-
-            var canvas = document.createElement("canvas");
-            canvas.width = 350;
-            canvas.height = 350;
-            canvas.classList.add("pl-5");
-
-            var ctx = canvas.getContext("2d");
-            await new Promise((resolve) => {
-              imgElement.onload = () => {
-                ctx.drawImage(imgElement, 0, 0, 350, 350);
-                resolve();
-              };
-            });
-
-            imageList.appendChild(canvas);
-          }
-        } catch (error) {
-          console.error("Error fetching OID values:", error);
-        }
-      }
-    </script>
-  </body>
-</html> -->
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -115,12 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Display OID Values</title>
     <link rel="stylesheet" href="/style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
   <body>
     <div class="m-10">
       <label
         for="datepicker"
-        class="bg-cyan-500 rounded-badge h-auto w-auto p-1"
+        class="font-bold bg-cyan-500 rounded-badge h-auto w-auto p-1 border-2 border-black"
         >Select Date:</label
       >
       <input
@@ -130,7 +21,7 @@
       />
       <button
         onclick="getImages()"
-        class="bg-cyan-500 hover:bg-cyan-600 rounded-badge h-auto w-auto p-1 select-none"
+        class="bg-cyan-500 hover:bg-cyan-600 rounded-badge h-auto w-auto p-1 select-none border-2 border-black"
       >
         Get Images
       </button>
@@ -138,12 +29,14 @@
     <div id="alertimg" class="absolute top-0 right-0 p-3"></div>
     <div id="alertcntimg" class="absolute top-0 right-0 p-3"></div>
 
-    <div id="imageContainer">
+    <div id="imageContainer" class="max-w-screen-sm">
       <div
         id="imageList"
         class="overflow-x-auto flex flex-nowrap flex-row space-x-4 px-3 shadow-inner will-change-auto"
       ></div>
     </div>
+
+    <canvas id="barChart" width="400" height="200"></canvas>
 
     <script>
       let imageCounter = 0;
@@ -242,9 +135,10 @@
 
       async function getImages() {
         const selectedDate = document.getElementById("datepicker").value;
+        console.log("Selected date:", selectedDate);
 
         try {
-          const response = await fetch(`/getid/${selectedDate}`);
+          const response = await fetch(`/getdate/${selectedDate}`);
           const base64Values = await response.json();
 
           const imageList = document.getElementById("imageList");
