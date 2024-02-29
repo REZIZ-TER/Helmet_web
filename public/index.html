@@ -5,10 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Display OID Values</title>
     <link rel="stylesheet" href="/style.css" />
+
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Kanit:wght@300&display=swap");
+    </style>
+    <style>
+      * {
+        font-family: "Kanit", sans-serif;
+      }
+    </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
   <body>
-    <div class="m-10">
+    <div class="m-10 sm:flex-col">
       <label
         for="datepicker"
         class="font-bold bg-cyan-500 rounded-badge h-auto w-auto p-1 border-2 border-black"
@@ -36,7 +45,37 @@
       ></div>
     </div>
 
-    <canvas id="barChart" width="400" height="200"></canvas>
+    <input
+      placeholder="Select Date"
+      type="date"
+      id="countDays"
+      class="rounded-box border-2 border-black hover:border-slate-400 select-none"
+    />
+    <button
+      onclick="getCountsDays()"
+      class="bg-cyan-500 hover:bg-cyan-600 rounded-badge h-auto w-auto p-1 select-none border-2 border-black"
+    >
+      Get Counts
+    </button>
+    <div id="getCounts"></div>
+
+    <select id="countMonths" name="month" required="">
+      <option value="" disabled selected>Select Month</option>
+      <option value="January">January</option>
+      <option value="February">February</option>
+      <option value="March">March</option>
+      <option value="April">April</option>
+      <option value="May">May</option>
+      <option value="June">June</option>
+      <option value="July">July</option>
+      <option value="August">August</option>
+      <option value="September">September</option>
+      <option value="October">October</option>
+      <option value="November">November</option>
+      <option value="December">December</option>
+    </select>
+
+    <div id="getMonths"></div>
 
     <script>
       let imageCounter = 0;
@@ -190,5 +229,6 @@
         }, 5000);
       }
     </script>
+    <script src="/getcntMonths.js"></script>
   </body>
 </html>
