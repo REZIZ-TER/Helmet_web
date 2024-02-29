@@ -1,43 +1,3 @@
-// const express = require('express');
-// const cors = require('cors');
-// const app = express();
-// const path = require('path');
-// const { MongoClient } = require('mongodb');
-
-// const port = 3000;
-// const uri = 'mongodb://myAdmin:kasidate01@localhost:27017/';
-
-// app.use(cors());
-// app.use(express.json());
-
-// // Assuming your index.html file is in the same directory as your server file
-// const indexPath = path.join(__dirname, 'index.html');
-
-// app.get('/index', (req, res) => {
-//   res.sendFile(indexPath);
-// });
-
-// app.get('/getid', async (req, res) => {
-//   const client = new MongoClient(uri);
-//   await client.connect();
-
-//   try {
-//     const users = await client.db('SaveImages').collection('Images').find({}).toArray();
-
-//     // Extracting values from $oid field
-//     const base64Values = users.map((user)=> user.image);
-//     const upload_time = users.map((user)=> user.upload_time);
-//     const stringUpload = upload_time.map(String);
-//     res.status(200).send({base64Values,stringUpload});
-//   } finally {
-//     await client.close();
-//   }
-// });
-
-// app.listen(port, () => {
-//   console.log(`Example app listening at http://localhost:${port}`);
-// });
-
 const express = require('express');
 const cors = require('cors');
 const app = express();
@@ -46,7 +6,7 @@ const { MongoClient } = require('mongodb');
 
 //const port = 3000;
 let port = process.env.PORT || 3000;
-const uri = process.env.MONGODB_CONNECT_URI;
+const uri = "mongodb+srv://myAdmin:kasidate01@cluster0.vjo2bfj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0" || process.env.MONGODB_CONNECT_URI;
 //const uri = "mongodb+srv://myAdmin:kasidate01@cluster0.vjo2bfj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 app.use(cors());
 app.use(express.json());
@@ -57,22 +17,6 @@ const indexPath = path.join(__dirname, 'public/index.html');
 app.get('/', (req, res) => {
     res.sendFile(indexPath);
 });
-
-
-// app.get('/getid/:date', async (req, res) => {
-//    const client = new MongoClient(uri);
-//    await client.connect();
-
-//    try {
-//      const selectedDate = req.params.date;
-//      const users = await client.db('SaveImages').collection('Images').find({ upload_time: selectedDate }).toArray();
-
-//      const base64Values = users.map((user) => user.image);
-//      res.status(200).send(base64Values);
-//    } finally {
-//      await client.close();
-//    }
-// });
 
 app.get('/getdate/:date', async (req, res) => {
     const client = new MongoClient(uri);
@@ -111,7 +55,7 @@ function getMonthName(month) {
     return months[month - 1];
 }
 
-
+///
 app.get('/getcntDay/:date', async (req, res) => {
     const client = new MongoClient(uri);
     await client.connect();
@@ -121,14 +65,31 @@ app.get('/getcntDay/:date', async (req, res) => {
         const month = new Date(selectedDate).getMonth() + 1;
         const monthName = getMonthName(month);
 
-        const countCollection = client.db('SaveImages').collection(monthName).find({ date: selectedDate }).toArray();
-        const getCounts = (await countCollection).map((user) => user.count);
+        const countCollection = client.db('SaveImages').collection(monthName);
+        
+        // ค้นหาข้อมูลใน collection สำหรับวันที่ระบุ
+        const existingData = await countCollection.findOne({ date: selectedDate });
 
-        res.status(200).send(getCounts);
+        if (!existingData) {
+            // หากไม่มีข้อมูล ให้เพิ่มข้อมูลลงไป
+            await countCollection.insertOne({
+                date: selectedDate,
+                count: 0
+            });
+
+            res.status(200).send([0]); // ส่งค่าเป็น Array ของค่าเพียงตัวเดียว ซึ่งในที่นี้คือ 0
+        } else {
+            // หากมีข้อมูลให้ดึงค่า count ออกมาและส่งให้กับ client
+            res.status(200).send([existingData.count]);
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('เกิดข้อผิดพลาด');
     } finally {
         await client.close();
     }
 });
+///
 
 app.get('/getcntMonths/:month', async (req, res) => {
     const client = new MongoClient(uri);
@@ -152,3 +113,44 @@ app.listen(port, () => {
     //console.log(`Example app listening at http://localhost:${port}`);
     console.log(`Connected to MongoDB Atlas! ${port}`);
 });
+
+
+
+
+// app.get('/getid/:date', async (req, res) => {
+//    const client = new MongoClient(uri);
+//    await client.connect();
+
+//    try {
+//      const selectedDate = req.params.date;
+//      const users = await client.db('SaveImages').collection('Images').find({ upload_time: selectedDate }).toArray();
+
+//      const base64Values = users.map((user) => user.image);
+//      res.status(200).send(base64Values);
+//    } finally {
+//      await client.close();
+//    }
+// });
+
+
+
+
+
+
+// app.get('/getcntDay/:date', async (req, res) => {
+//     const client = new MongoClient(uri);
+//     await client.connect();
+
+//     try {
+//         const selectedDate = req.params.date;
+//         const month = new Date(selectedDate).getMonth() + 1;
+//         const monthName = getMonthName(month);
+
+//         const countCollection = client.db('SaveImages').collection(monthName).find({ date: selectedDate }).toArray();
+//         const getCounts = (await countCollection).map((user) => user.count);
+
+//         res.status(200).send(getCounts);
+//     } finally {
+//         await client.close();
+//     }
+// });
