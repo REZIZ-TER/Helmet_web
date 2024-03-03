@@ -7,12 +7,16 @@
     <link rel="stylesheet" href="/style.css" />
     <link rel="stylesheet" href="/fontkanit.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script
+      type="text/javascript"
+      src="https://www.gstatic.com/charts/loader.js"
+    ></script>
   </head>
   <body>
-    <div class="m-10 flex flex-wrap">
+    <div class="m-10 sm:justify-start sm:inline sm:whitespace-nowrap">
       <label
         for="datepicker"
-        class="font-bold bg-cyan-500 rounded-badge h-auto w-auto p-1 mr-1 border-2 border-black"
+        class="font-bold bg-cyan-500 rounded-badge p-1 mr-1 border-2 border-black"
         >Select Date:</label
       >
       <input
@@ -22,7 +26,7 @@
       />
       <button
         onclick="getImages()"
-        class="bg-cyan-500 hover:bg-cyan-600 rounded-badge h-auto w-auto p-1 mx-1 select-none border-2 border-black"
+        class="font-bold bg-cyan-500 hover:bg-cyan-600 rounded-badge p-1 mx-1 select-none border-2 border-black"
       >
         Get Images
       </button>
@@ -42,14 +46,14 @@
       <label
         for="countDays"
         class="font-bold bg-cyan-500 rounded-badge h-auto w-auto p-1 mr-1 border-2 border-black"
-        >Select Date:</label
+        >Select Date 2:</label
       >
       <input
         type="date"
         id="countDays"
         class="rounded-box border-2 border-black hover:border-slate-400 select-none mr-1"
       />
-      <div id="getDays"></div>
+      <div id="getDays" class="flex flex-wrap"></div>
 
       <label
         for="countMonths"
@@ -81,5 +85,8 @@
 
     <script src="/main.js"></script>
     <script src="/getcntMonths.js"></script>
+    <div class="m-10 max-w-sm">
+      <canvas id="myChart" width="350" height="200"></canvas>
+    </div>
   </body>
 </html>

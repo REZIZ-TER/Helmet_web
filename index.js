@@ -56,6 +56,42 @@ function getMonthName(month) {
 }
 
 ///
+// app.get('/getcntDay/:date', async (req, res) => {
+//     const client = new MongoClient(uri);
+//     await client.connect();
+
+//     try {
+//         const selectedDate = req.params.date;
+//         const month = new Date(selectedDate).getMonth() + 1;
+//         const monthName = getMonthName(month);
+
+//         const countCollection = client.db('SaveImages').collection(monthName);
+
+//         // ค้นหาข้อมูลใน collection สำหรับวันที่ระบุ
+//         const existingData = await countCollection.findOne({ date: selectedDate });
+
+//         if (!existingData) {
+//             // หากไม่มีข้อมูล ให้เพิ่มข้อมูลลงไป
+//             await countCollection.insertOne({
+//                 date: selectedDate,
+//                 count: 0
+//             });
+
+//             res.status(200).send([0]); // ส่งค่าเป็น Array ของค่าเพียงตัวเดียว ซึ่งในที่นี้คือ 0
+//         } else {
+//             // หากมีข้อมูลให้ดึงค่า count ออกมาและส่งให้กับ client
+//             res.status(200).send([existingData.count]);
+//         }
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).send('เกิดข้อผิดพลาด');
+//     } finally {
+//         await client.close();
+//     }
+// });
+///
+
+
 app.get('/getcntDay/:date', async (req, res) => {
     const client = new MongoClient(uri);
     await client.connect();
@@ -65,22 +101,50 @@ app.get('/getcntDay/:date', async (req, res) => {
         const month = new Date(selectedDate).getMonth() + 1;
         const monthName = getMonthName(month);
 
-        const countCollection = client.db('SaveImages').collection(monthName);
-        
-        // ค้นหาข้อมูลใน collection สำหรับวันที่ระบุ
-        const existingData = await countCollection.findOne({ date: selectedDate });
+        const countCollection = client.db('SaveImages').collection('Images');
 
-        if (!existingData) {
+        // ค้นหาข้อมูลใน collection สำหรับวันที่ระบุ
+        const totalCounts = await countCollection.aggregate([
+            {
+                $match: {
+                    upload_time: selectedDate
+                }
+            },
+            {
+                $group: {
+                    _id: null,
+                    totalNoHelmet: {
+                        $sum: "$count_no_helmet"
+                    },
+                    totalRider: {
+                        $sum: "$count_rider"
+                    }
+                }
+            }
+        ]).toArray();
+
+        if (totalCounts.length === 0) {
             // หากไม่มีข้อมูล ให้เพิ่มข้อมูลลงไป
             await countCollection.insertOne({
                 date: selectedDate,
-                count: 0
+                count_no_helmet: 0,
+                count_rider: 0
             });
 
-            res.status(200).send([0]); // ส่งค่าเป็น Array ของค่าเพียงตัวเดียว ซึ่งในที่นี้คือ 0
+            res.status(200).send({
+                count_no_helmet: 0,
+                count_rider: 0
+            });
         } else {
-            // หากมีข้อมูลให้ดึงค่า count ออกมาและส่งให้กับ client
-            res.status(200).send([existingData.count]);
+            // หากมีข้อมูลให้ส่งผลลัพธ์รวมกับ count_no_helmet และ count_rider ให้กับ client
+            // res.status(200).send({
+            //     count_no_helmet: totalCounts[0].totalNoHelmet,
+            //     count_rider: totalCounts[0].totalRider
+            // });
+            res.status(200).send([
+                totalCounts[0].totalNoHelmet,
+                totalCounts[0].totalRider]
+            );
         }
     } catch (error) {
         console.error(error);
@@ -89,7 +153,7 @@ app.get('/getcntDay/:date', async (req, res) => {
         await client.close();
     }
 });
-///
+
 
 app.get('/getcntMonths/:month', async (req, res) => {
     const client = new MongoClient(uri);
@@ -113,6 +177,7 @@ app.listen(port, () => {
     //console.log(`Example app listening at http://localhost:${port}`);
     console.log(`Connected to MongoDB Atlas! ${port}`);
 });
+
 
 
 
