@@ -12,8 +12,10 @@
       src="https://www.gstatic.com/charts/loader.js"
     ></script>
   </head>
-  <body>
-    <div class="m-10 sm:justify-start sm:inline-flex sm:whitespace-nowrap sm:m-5">
+  <body class="rounded-lg">
+    <div
+      class="m-10 sm:justify-start sm:inline-flex sm:whitespace-nowrap sm:m-5"
+    >
       <label
         for="datepicker"
         class="font-bold bg-cyan-500 rounded-badge p-1 mr-1 border-2 border-black"
@@ -32,39 +34,45 @@
       </button>
     </div>
 
-    <div id="alertimg" class="absolute top-0 right-0 p-3"></div>
-    <div id="alertcntimg" class="absolute top-0 right-0 p-3"></div>
+    <div
+      class="absolute top-1 right-0 p-3 opacity-75 sm:justify-start sm:inline-flex sm:whitespace-nowrap sm:flex-nowrap"
+    >
+      <div id="alertimg"></div>
+      <div id="alertcntimg"></div>
+    </div>
 
-    <div id="imageContainer" class="max-w-screen-sm">
+    <div id="imageContainer" class="mx-10 rounded-box bg-gray-200 sm:mx-5">
       <div
         id="imageList"
-        class="overflow-x-auto flex flex-nowrap flex-row space-x-4 px-3 shadow-inner will-change-auto"
+        class="overflow-x-auto flex flex-nowrap flex-row space-x-2 shadow-lg will-change-auto"
       ></div>
     </div>
 
-    <div class="m-10 flex flex-wrap">
+    <div
+      class="m-10 flex flex-row sm:justify-start sm:inline-flex sm:whitespace-nowrap sm:m-5 sm:flex sm:flex-col sm:space-y-5"
+    >
       <label
         for="countDays"
-        class="font-bold bg-cyan-500 rounded-badge h-auto w-auto p-1 mr-1 border-2 border-black"
+        class="font-bold bg-cyan-500 rounded-badge p-1 mr-1 border-2 border-black text-center"
         >Select Date 2:</label
       >
       <input
         type="date"
         id="countDays"
-        class="rounded-box border-2 border-black hover:border-slate-400 select-none mr-1"
+        class="rounded-box border-2 border-black hover:border-slate-400 select-none mr-2 text-center"
       />
       <div id="getDays" class="flex flex-wrap"></div>
 
       <label
         for="countMonths"
-        class="font-bold bg-cyan-500 rounded-badge h-auto w-auto p-1 mx-1 border-2 border-black"
+        class="font-bold bg-cyan-500 rounded-badge p-1 mr-1 border-2 border-black text-center"
         >Select Month:</label
       >
       <select
         id="countMonths"
         name="month"
         required=""
-        class="rounded-badge border-2 border-black"
+        class="rounded-badge border-2 border-black text-center"
       >
         <option value="" disabled selected>Select Month</option>
         <option value="January">January</option>
@@ -85,8 +93,9 @@
 
     <script src="/main.js"></script>
     <script src="/getcntMonths.js"></script>
-    <div class="m-10 max-w-sm">
+    <div class="m-10 w-2/4 my-4 py-4 object-center sm:m-5 sm:w-full">
       <canvas id="myChart" width="350" height="200"></canvas>
     </div>
+
   </body>
 </html>
