@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "concurrently \"tailwindcss -i ./src/input.css -o ./public/style.css --watch\" \"nodemon index.js\""
+    "dev": "concurrently \"tailwindcss -i ./src/input.css -o ./public/style.css --watch\" \"nodemon index.js\"",
+    "build": "tailwindcss -i ./src/input.css -o ./public/style.css --watch"
   },
   "author": "",
   "license": "ISC",
