@@ -1080,25 +1080,13 @@ html {
   margin: 2.5rem;
 }
 
-.m-5 {
-  margin: 1.25rem;
-}
-
 .mx-1 {
   margin-left: 0.25rem;
   margin-right: 0.25rem;
 }
 
-.ml-10 {
-  margin-left: 2.5rem;
-}
-
 .mr-1 {
   margin-right: 0.25rem;
-}
-
-.mt-10 {
-  margin-top: 2.5rem;
 }
 
 .flex {
@@ -1238,14 +1226,6 @@ html {
     margin: 1.25rem;
   }
 
-  .sm\:mt-10 {
-    margin-top: 2.5rem;
-  }
-
-  .sm\:ml-10 {
-    margin-left: 2.5rem;
-  }
-
   .sm\:inline {
     display: inline;
   }
@@ -1260,9 +1240,5 @@ html {
 
   .sm\:whitespace-nowrap {
     white-space: nowrap;
-  }
-
-  .sm\:p-10 {
-    padding: 2.5rem;
   }
 }
