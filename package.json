@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "concurrently \"tailwindcss -i ./src/input.css -o ./public/style.css --watch\" \"nodemon index.js\"",
-    "myweb": "tailwindcss -i ./src/input.css -o ./public/style.css"
+    "mainweb": "tailwindcss -i ./src/input.css -o ./public/style.css"
   },
   "author": "",
   "license": "ISC",
