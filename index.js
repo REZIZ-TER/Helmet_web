@@ -55,7 +55,6 @@ function getMonthName(month) {
     return months[month - 1];
 }
 
-///
 // app.get('/getcntDay/:date', async (req, res) => {
 //     const client = new MongoClient(uri);
 //     await client.connect();
@@ -65,22 +64,45 @@ function getMonthName(month) {
 //         const month = new Date(selectedDate).getMonth() + 1;
 //         const monthName = getMonthName(month);
 
-//         const countCollection = client.db('SaveImages').collection(monthName);
+//         const countCollection = client.db('SaveImages').collection('Images');
 
 //         // ค้นหาข้อมูลใน collection สำหรับวันที่ระบุ
-//         const existingData = await countCollection.findOne({ date: selectedDate });
+//         const totalCounts = await countCollection.aggregate([
+//             {
+//                 $match: {
+//                     upload_time: selectedDate
+//                 }
+//             },
+//             {
+//                 $group: {
+//                     _id: null,
+//                     totalNoHelmet: {
+//                         $sum: "$count_no_helmet"
+//                     },
+//                     totalRider: {
+//                         $sum: "$count_rider"
+//                     }
+//                 }
+//             }
+//         ]).toArray();
 
-//         if (!existingData) {
+//         if (totalCounts.length === 0) {
 //             // หากไม่มีข้อมูล ให้เพิ่มข้อมูลลงไป
 //             await countCollection.insertOne({
-//                 date: selectedDate,
-//                 count: 0
+//                 upload_time: selectedDate,
+//                 count_no_helmet: 0,
+//                 count_rider: 0
 //             });
 
-//             res.status(200).send([0]); // ส่งค่าเป็น Array ของค่าเพียงตัวเดียว ซึ่งในที่นี้คือ 0
+//             res.status(200).send({
+//                 count_no_helmet: 0,
+//                 count_rider: 0
+//             });
 //         } else {
-//             // หากมีข้อมูลให้ดึงค่า count ออกมาและส่งให้กับ client
-//             res.status(200).send([existingData.count]);
+//             res.status(200).send([
+//                 totalCounts[0].totalNoHelmet,
+//                 totalCounts[0].totalRider]
+//             );
 //         }
 //     } catch (error) {
 //         console.error(error);
@@ -89,7 +111,6 @@ function getMonthName(month) {
 //         await client.close();
 //     }
 // });
-///
 
 
 app.get('/getcntDay/:date', async (req, res) => {
@@ -126,25 +147,18 @@ app.get('/getcntDay/:date', async (req, res) => {
         if (totalCounts.length === 0) {
             // หากไม่มีข้อมูล ให้เพิ่มข้อมูลลงไป
             await countCollection.insertOne({
-                date: selectedDate,
+                upload_time: selectedDate,
                 count_no_helmet: 0,
                 count_rider: 0
             });
 
-            res.status(200).send({
-                count_no_helmet: 0,
-                count_rider: 0
-            });
+            // ส่งค่า 0 กลับเมื่อไม่มีข้อมูล
+            res.status(200).send([0, 0]);
         } else {
-            // หากมีข้อมูลให้ส่งผลลัพธ์รวมกับ count_no_helmet และ count_rider ให้กับ client
-            // res.status(200).send({
-            //     count_no_helmet: totalCounts[0].totalNoHelmet,
-            //     count_rider: totalCounts[0].totalRider
-            // });
             res.status(200).send([
                 totalCounts[0].totalNoHelmet,
-                totalCounts[0].totalRider]
-            );
+                totalCounts[0].totalRider
+            ]);
         }
     } catch (error) {
         console.error(error);
@@ -155,22 +169,96 @@ app.get('/getcntDay/:date', async (req, res) => {
 });
 
 
+
+// app.get('/getcntMonths/:month', async (req, res) => {
+//     const client = new MongoClient(uri);
+//     await client.connect();
+
+
+//     try {
+//         const monthName = req.params.month;
+//         const countCollection = client.db('SaveImages').collection(monthName);
+//         const count = await countCollection.estimatedDocumentCount({});
+//         console.log(count);
+
+//         res.status(200).send({ count });
+//     } finally {
+//         await client.close();
+//     }
+// });
+
+
 app.get('/getcntMonths/:month', async (req, res) => {
     const client = new MongoClient(uri);
     await client.connect();
 
-
     try {
-        const monthName = req.params.month;
-        const countCollection = client.db('SaveImages').collection(monthName);
-        const count = await countCollection.estimatedDocumentCount({});
-        console.log(count);
+        const selectedMonth = req.params.month;
+        const countCollection = client.db('SaveImages').collection('Images');
 
-        res.status(200).send({ count });
+        // แปลงชื่อเดือนที่รับมาเป็นรูปแบบที่ MongoDB ใช้ได้ (03)
+        const monthNum = getMonthNumber(selectedMonth);
+
+        // ค้นหาข้อมูลใน collection สำหรับเดือนที่ระบุ
+        const totalCounts = await countCollection.aggregate([
+            {
+                $match: {
+                    // ใช้ regex เพื่อค้นหาข้อมูลที่มี upload_time ตรงกับเดือนที่เลือก
+                    upload_time: new RegExp(`^2024-${monthNum}`)
+                }
+            },
+            {
+                $group: {
+                    _id: null,
+                    totalNoHelmet: {
+                        $sum: "$count_no_helmet"
+                    },
+                    totalRider: {
+                        $sum: "$count_rider"
+                    }
+                }
+            }
+        ]).toArray();
+
+        if (totalCounts.length === 0) {
+            // หากไม่มีข้อมูล ให้ส่งกลับเป็น 0
+            res.status(200).send({
+                count_no_helmet: 0,
+                count_rider: 0
+            });
+        } else {
+            res.status(200).send({
+                count_no_helmet: totalCounts[0].totalNoHelmet,
+                count_rider: totalCounts[0].totalRider
+            });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('เกิดข้อผิดพลาด');
     } finally {
         await client.close();
     }
 });
+
+// Function สำหรับแปลงชื่อเดือนเป็นเลขเดือน (03)
+function getMonthNumber(month) {
+    const months = {
+        "January": "01",
+        "February": "02",
+        "March": "03",
+        "April": "04",
+        "May": "05",
+        "June": "06",
+        "July": "07",
+        "August": "08",
+        "September": "09",
+        "October": "10",
+        "November": "11",
+        "December": "12"
+    };
+    return months[month];
+}
+
 
 
 app.listen(port, () => {

@@ -13,8 +13,12 @@
     ></script>
   </head>
   <body class="rounded-lg">
+    <div class="pt-5 font-extrabold text-lg flex items-center justify-center">
+      เลือกวันที่ที่ต้องการดูรูปภาพ
+    </div>
+
     <div
-      class="m-10 sm:justify-start sm:inline-flex sm:whitespace-nowrap sm:m-5"
+      class="m-5 flex items-center justify-center sm:justify-start sm:inline-flex sm:whitespace-nowrap"
     >
       <label
         for="datepicker"
@@ -48,24 +52,27 @@
       ></div>
     </div>
 
+    <hr
+      class="w-3/4 h-1 mx-auto my-4 bg-gray-100 border-0 rounded md:my-10 dark:bg-gray-500"
+    />
+
     <div
-      class="m-10 flex flex-row sm:justify-start sm:inline-flex sm:whitespace-nowrap sm:m-5 sm:flex sm:flex-col sm:space-y-5"
+      class="m-5 flex justify-center gap-1 sm:inline-flex sm:whitespace-nowrap sm:space-y-0 sm:flex-wrap"
     >
       <label
         for="countDays"
-        class="font-bold bg-cyan-500 rounded-badge p-1 mr-1 border-2 border-black text-center"
+        class="font-bold bg-cyan-500 rounded-badge p-1 border-2 border-black text-center"
         >Select Date 2:</label
       >
       <input
         type="date"
         id="countDays"
-        class="rounded-box border-2 border-black hover:border-slate-400 select-none mr-2 text-center"
+        class="rounded-box border-2 border-black hover:border-slate-400 select-none text-center"
       />
-      <div id="getDays" class="flex flex-wrap"></div>
 
       <label
         for="countMonths"
-        class="font-bold bg-cyan-500 rounded-badge p-1 mr-1 border-2 border-black text-center"
+        class="font-bold bg-cyan-500 rounded-badge p-1 border-2 border-black text-center"
         >Select Month:</label
       >
       <select
@@ -88,14 +95,18 @@
         <option value="November">November</option>
         <option value="December">December</option>
       </select>
-      <div id="getMonths"></div>
     </div>
 
     <script src="/main.js"></script>
     <script src="/getcntMonths.js"></script>
-    <div class="m-10 w-2/4 my-4 py-4 object-center sm:m-5 sm:w-full">
-      <canvas id="myChart" width="350" height="200"></canvas>
+    <div class="h-fit p-3 flex items-center justify-center">
+      <div class="p-3 w-full max-w-md bg-white rounded-lg">
+        <canvas id="myChartday" width="300" height="200"></canvas>
+        <hr
+          class="w-3/4 h-1 mx-auto my-4 bg-gray-100 border-0 rounded md:my-10 dark:bg-gray-500"
+        />
+        <canvas id="myChartmonth" width="300" height="200"></canvas>
+      </div>
     </div>
-
   </body>
 </html>
