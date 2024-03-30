@@ -119,14 +119,14 @@ async function getImages() {
       imgElement.src = "data:image/jpeg;base64," + value;
 
       var canvas = document.createElement("canvas");
-      canvas.width = 350;
-      canvas.height = 350;
+      canvas.width = 400;
+      canvas.height = 400;
       canvas.classList.add("rounded-box");
 
       var ctx = canvas.getContext("2d");
       await new Promise((resolve) => {
         imgElement.onload = () => {
-          ctx.drawImage(imgElement, 0, 0, 350, 350);
+          ctx.drawImage(imgElement, 0, 0, 400, 400);
           resolve();
         };
       });
