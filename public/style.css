@@ -1221,8 +1221,30 @@ html {
   gap: 1.25rem;
 }
 
+.gap-px {
+  gap: 1px;
+}
+
+.gap-0 {
+  gap: 0px;
+}
+
 .gap-y-px {
   row-gap: 1px;
+}
+
+.gap-x-1 {
+  -moz-column-gap: 0.25rem;
+       column-gap: 0.25rem;
+}
+
+.gap-y-1 {
+  row-gap: 0.25rem;
+}
+
+.gap-x-px {
+  -moz-column-gap: 1px;
+       column-gap: 1px;
 }
 
 .space-x-2 > :not([hidden]) ~ :not([hidden]) {
@@ -1370,6 +1392,26 @@ html {
     display: inline-flex;
   }
 
+  .sm\:auto-cols-fr {
+    grid-auto-columns: minmax(0, 1fr);
+  }
+
+  .sm\:grid-cols-1 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+
+  .sm\:grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .sm\:flex-row {
+    flex-direction: row;
+  }
+
+  .sm\:flex-col {
+    flex-direction: column;
+  }
+
   .sm\:flex-wrap {
     flex-wrap: wrap;
   }
@@ -1378,14 +1420,46 @@ html {
     flex-wrap: nowrap;
   }
 
+  .sm\:place-items-center {
+    place-items: center;
+  }
+
+  .sm\:items-start {
+    align-items: flex-start;
+  }
+
+  .sm\:items-center {
+    align-items: center;
+  }
+
   .sm\:justify-start {
     justify-content: flex-start;
+  }
+
+  .sm\:justify-center {
+    justify-content: center;
+  }
+
+  .sm\:gap-5 {
+    gap: 1.25rem;
   }
 
   .sm\:space-y-0 > :not([hidden]) ~ :not([hidden]) {
     --tw-space-y-reverse: 0;
     margin-top: calc(0px * calc(1 - var(--tw-space-y-reverse)));
     margin-bottom: calc(0px * var(--tw-space-y-reverse));
+  }
+
+  .sm\:self-center {
+    align-self: center;
+  }
+
+  .sm\:overflow-auto {
+    overflow: auto;
+  }
+
+  .sm\:overflow-hidden {
+    overflow: hidden;
   }
 
   .sm\:whitespace-nowrap {

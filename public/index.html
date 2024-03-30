@@ -18,12 +18,12 @@
     </div>
 
     <div
-      class="m-5 flex items-center justify-center sm:justify-start sm:inline-flex sm:whitespace-nowrap"
+      class="m-5 flex justify-center gap-0 sm:inline-flex sm:whitespace-nowrap sm:flex-wrap"
     >
       <label
         for="datepicker"
         class="font-bold bg-cyan-500 rounded-badge p-1 mr-1 border-2 border-black"
-        >Select Date:</label
+        >เลือกวันที่:</label
       >
       <input
         type="date"
@@ -32,7 +32,7 @@
       />
       <button
         onclick="getImages()"
-        class="font-bold bg-cyan-500 hover:bg-cyan-600 rounded-badge p-1 mx-1 select-none border-2 border-black"
+        class="font-bold bg-cyan-500 hover:bg-cyan-600 rounded-badge p-1 select-none border-2 border-black"
       >
         Get Images
       </button>
@@ -55,14 +55,17 @@
     <hr
       class="w-3/4 h-1 mx-auto my-4 bg-gray-100 border-0 rounded md:my-10 dark:bg-gray-500"
     />
+    <div class="font-extrabold text-lg flex items-center justify-center">
+      เลือกวันที่ หรือ เดือนที่ต้องการดูข้อมูลกราฟแท่ง
+    </div>
 
     <div
-      class="m-5 flex justify-center gap-1 sm:inline-flex sm:whitespace-nowrap sm:space-y-0 sm:flex-wrap"
+      class="m-5 flex justify-center gap-1 sm:inline-flex sm:whitespace-nowrap sm:flex-wrap"
     >
       <label
         for="countDays"
         class="font-bold bg-cyan-500 rounded-badge p-1 border-2 border-black text-center"
-        >Select Date 2:</label
+        >เลือกวันที่:</label
       >
       <input
         type="date"
@@ -73,7 +76,7 @@
       <label
         for="countMonths"
         class="font-bold bg-cyan-500 rounded-badge p-1 border-2 border-black text-center"
-        >Select Month:</label
+        >เลือกเดือน:</label
       >
       <select
         id="countMonths"
