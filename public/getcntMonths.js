@@ -57,13 +57,15 @@ async function getCountsDays() {
 
         // สร้างกราฟเมื่อมีข้อมูล
         createBarChart(selectedDate, getCounts[0], getCounts[1]);
+        document.getElementById("shownohelmet").innerHTML = "";
+        let getpercentage = (getCounts[0] / getCounts[1]) * 100;
+        if (!isFinite(getpercentage)) {
+            document.getElementById("shownohelmet").innerHTML = "<p>Error value</p>";
+        } else {
+            document.getElementById("shownohelmet").innerHTML = `
+                <p>ไม่สวมหมวกกันน็อครายวัน : ${getpercentage.toFixed(1) + "%"}</p>`;
+        }
 
-        // แสดงข้อมูลใน HTML
-        // document.getElementById("getDays").innerHTML = `
-        //     <p>ข้อมูลในวันที่ ${selectedDate}:</p>
-        //     <p>จำนวน no helmet: ${getCounts[0]}</p>
-        //     <p>จำนวน rider: ${getCounts[1]}</p>
-        // `;
         console.log("Counts:", getCounts);
     } catch (error) {
         console.error("Error fetching OID values:", error);
@@ -145,6 +147,13 @@ async function getCountsMonths() {
         const getCounts = await response.json();
         const countNoHelmet = getCounts.count_no_helmet;
         const countRider = getCounts.count_rider;
+        let getpercentage = (countNoHelmet / countRider) * 100;
+        if (!isFinite(getpercentage)) {
+            document.getElementById("shownohelmetmonth").innerHTML = "<p>Error value</p>";
+        } else {
+            document.getElementById("shownohelmetmonth").innerHTML = `
+                <p>ไม่สวมหมวกกันน็อครายเดือน : ${getpercentage.toFixed(1) + "%"}</p>`;
+        }
 
         createBarChartmonth(selectedMonths, countNoHelmet, countRider);
 
