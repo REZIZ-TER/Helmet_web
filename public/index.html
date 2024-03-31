@@ -18,7 +18,7 @@
     </div>
 
     <div
-      class="m-5 flex justify-center gap-0 sm:inline-flex sm:whitespace-nowrap sm:flex-wrap"
+      class="m-5 flex justify-center sm:inline-flex sm:whitespace-nowrap sm:flex-wrap"
     >
       <label
         for="datepicker"
@@ -32,9 +32,9 @@
       />
       <button
         onclick="getImages()"
-        class="font-bold bg-cyan-500 hover:bg-cyan-600 rounded-badge p-1 select-none border-2 border-black"
+        class="font-bold bg-teal-400 hover:bg-cyan-600 hover:text-white rounded-badge p-1 select-none border-2 border-black"
       >
-        Get Images
+        รับภาพ
       </button>
     </div>
 
@@ -55,12 +55,14 @@
     <hr
       class="w-3/4 h-1 mx-auto my-4 bg-gray-100 border-0 rounded md:my-10 dark:bg-gray-500"
     />
-    <div class="font-extrabold text-lg flex items-center justify-center">
-      เลือกวันที่ หรือ เดือนที่ต้องการดูข้อมูลกราฟแท่ง
+    <div
+      class="font-extrabold text-lg flex items-center justify-center text-center"
+    >
+      เลือกวันที่ หรือ เดือน<br />ที่ต้องการดูข้อมูลกราฟแท่ง<br />
     </div>
 
     <div
-      class="m-5 flex justify-center gap-1 sm:inline-flex sm:whitespace-nowrap sm:flex-wrap"
+      class="m-3 flex justify-center gap-1 sm:inline-flex sm:whitespace-nowrap sm:flex-wrap"
     >
       <label
         for="countDays"
@@ -82,7 +84,7 @@
         id="countMonths"
         name="month"
         required=""
-        class="rounded-badge border-2 border-black text-center"
+        class="rounded-badge border-2 border-black hover:border-slate-400 text-center"
       >
         <option value="" disabled selected>Select Month</option>
         <option value="January">January</option>
