@@ -47,6 +47,31 @@
 
 
 
+// async function getCountsDays() {
+//     const selectedDate = document.getElementById("countDays").value;
+//     console.log("Selected date 2:", selectedDate);
+
+//     try {
+//         const response = await fetch(`/getcntDay/${selectedDate}`);
+//         const getCounts = await response.json();
+
+//         // สร้างกราฟเมื่อมีข้อมูล
+//         createBarChart(selectedDate, getCounts[0], getCounts[1]);
+//         document.getElementById("shownohelmet").innerHTML = "";
+//         let getpercentage = (getCounts[0] / getCounts[1]) * 100;
+//         if (!isFinite(getpercentage)) {
+//             document.getElementById("shownohelmet").innerHTML = "<p>Error value</p>";
+//         } else {
+//             document.getElementById("shownohelmet").innerHTML = `
+//                 <p>ไม่สวมหมวกกันน็อครายวัน : ${getpercentage.toFixed(1) + "%"}</p>`;
+//         }
+
+//         console.log("Counts:", getCounts);
+//     } catch (error) {
+//         console.error("Error fetching OID values:", error);
+//     }
+// }
+
 async function getCountsDays() {
     const selectedDate = document.getElementById("countDays").value;
     console.log("Selected date 2:", selectedDate);
@@ -87,7 +112,7 @@ function createBarChart(selectedDate, noHelmetCount, riderCount) {
         labels: [selectedDate],
         datasets: [
             {
-                label: 'No Helmet',
+                label: 'ผู้ไม่สวมหมวก',
                 backgroundColor: 'rgba(255, 99, 132, 0.2)',
                 borderColor: 'rgba(255, 99, 132, 1)',
                 borderWidth: 1,
@@ -179,7 +204,7 @@ function createBarChartmonth(selectedMonths, noHelmetCount, riderCount) {
         labels: [selectedMonths],
         datasets: [
             {
-                label: 'No Helmet',
+                label: 'ผู้ไม่สวมหมวก',
                 backgroundColor: 'rgba(255, 99, 132, 0.2)',
                 borderColor: 'rgba(255, 99, 132, 1)',
                 borderWidth: 1,

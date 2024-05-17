@@ -92,29 +92,107 @@ function clearCustomAlert() {
   alertContainerCnt.innerHTML = "";
 }
 
+// async function getImages() {
+//   const selectedDate = document.getElementById("datepicker").value;
+//   console.log("Selected date:", selectedDate);
+
+//   try {
+//     const response = await fetch(`/getdate/${selectedDate}`);
+//     const base64Values = await response.json();
+
+//     const imageList = document.getElementById("imageList");
+//     const imageCounterElement = document.getElementById("imageCounter");
+
+//     imageList.innerHTML = ""; // Clear existing images
+//     imageCounter = 0; // Reset counter
+
+//     clearCustomAlert(); // Clear CustomAlert when there are images
+
+//     if (base64Values.length === 0) {
+//       createCustomAlert("No images for the selected date.");
+//       imageCounterElement.textContent = ""; // Hide counter when no images
+//       return;
+//     }
+
+//     for (const value of base64Values) {
+//       var imgElement = document.createElement("img");
+//       imgElement.src = "data:image/jpeg;base64," + value;
+
+//       var canvas = document.createElement("canvas");
+//       canvas.width = 400;
+//       canvas.height = 400;
+//       canvas.classList.add("rounded-box");
+
+//       var ctx = canvas.getContext("2d");
+//       await new Promise((resolve) => {
+//         imgElement.onload = () => {
+//           ctx.drawImage(imgElement, 0, 0, 400, 400);
+//           resolve();
+//         };
+//       });
+
+//       imageList.appendChild(canvas);
+//       imageCounter++;
+//     }
+
+//     if (imageCounter > 0) {
+//       createCountAlert(`จำนวนรูปภาพ ณ วันที่เลือก: ${imageCounter}`);
+//       //imageCounterElement.textContent = `Images: ${imageCounter}`;
+//     } else {
+//       imageCounterElement.textContent = ""; // Hide counter when no images
+//     }
+//   } catch (error) {
+//     console.error("Error fetching OID values:", error);
+//   }
+//   setTimeout(() => {
+//     clearCustomAlert();
+//   }, 5000);
+// }
+
+
 async function getImages() {
-  const selectedDate = document.getElementById("datepicker").value;
-  console.log("Selected date:", selectedDate);
+  const startDate = document.getElementById("startdate").value;
+  const endDate = document.getElementById("enddate").value;
+  console.log("Selected date range:", startDate, endDate);
+
+  if (!startDate && !endDate) {
+    createCustomAlert("Please provide at least one date.");
+    return;
+  }
+
+  let url = `/getdate?`;
+  if (startDate) {
+    url += `startDate=${startDate}`;
+  }
+  if (endDate) {
+    if (startDate) {
+      url += `&endDate=${endDate}`;
+    } else {
+      url += `endDate=${endDate}`;
+    }
+  }
 
   try {
-    const response = await fetch(`/getdate/${selectedDate}`);
+    const response = await fetch(url);
     const base64Values = await response.json();
 
     const imageList = document.getElementById("imageList");
     const imageCounterElement = document.getElementById("imageCounter");
 
     imageList.innerHTML = ""; // Clear existing images
-    imageCounter = 0; // Reset counter
+    let imageCounter = 0; // Reset counter
 
     clearCustomAlert(); // Clear CustomAlert when there are images
 
     if (base64Values.length === 0) {
-      createCustomAlert("No images for the selected date.");
+      createCustomAlert("No images for the selected date range.");
       imageCounterElement.textContent = ""; // Hide counter when no images
       return;
     }
 
     for (const value of base64Values) {
+      if (!value) continue; // ตรวจสอบว่ามีข้อมูลใน image หรือไม่
+
       var imgElement = document.createElement("img");
       imgElement.src = "data:image/jpeg;base64," + value;
 
@@ -136,15 +214,16 @@ async function getImages() {
     }
 
     if (imageCounter > 0) {
-      createCountAlert(`จำนวนรูปภาพ ณ วันที่เลือก: ${imageCounter}`);
+      createCountAlert(`จำนวนรูปภาพในช่วงวันที่เลือก: ${imageCounter}`);
       //imageCounterElement.textContent = `Images: ${imageCounter}`;
     } else {
       imageCounterElement.textContent = ""; // Hide counter when no images
     }
   } catch (error) {
-    console.error("Error fetching OID values:", error);
+    console.error("Error fetching images:", error);
   }
   setTimeout(() => {
     clearCustomAlert();
   }, 5000);
 }
+

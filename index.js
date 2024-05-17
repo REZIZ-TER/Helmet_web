@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 const path = require('path');
+const request = require('request'); // ใช้งาน request
 const { MongoClient } = require('mongodb');
 
 //const port = 3000;
@@ -18,34 +19,83 @@ app.get('/', (req, res) => {
     res.sendFile(indexPath);
 });
 
-app.get('/getdate/:date', async (req, res) => {
+// app.get('/getdate/:date', async (req, res) => {
+//     const client = new MongoClient(uri);
+//     await client.connect();
+
+//     try {
+//         const selectedDate = req.params.date;
+//         const month = new Date(selectedDate).getMonth() + 1; // Adding 1 because months are zero-based
+//         const users = await client.db('SaveImages').collection('Images').find({ upload_time: selectedDate }).toArray();
+
+//         const base64Values = users.map((user) => user.image);
+//         res.status(200).send(base64Values);
+
+//         // Save count to a collection for this month
+//         const count = users.length;
+//         const monthName = getMonthName(month);
+
+//         const countCollection = client.db('SaveImages').collection(monthName);
+//         const existingCount = await countCollection.findOne({ date: selectedDate });
+
+//         if (existingCount) {
+//             await countCollection.updateOne({ date: selectedDate }, { $set: { count } });
+//         } else {
+//             await countCollection.insertOne({ date: selectedDate, count });
+//         }
+//     } finally {
+//         await client.close();
+//     }
+// });
+
+app.get('/getdate', async (req, res) => {
     const client = new MongoClient(uri);
     await client.connect();
 
     try {
-        const selectedDate = req.params.date;
-        const month = new Date(selectedDate).getMonth() + 1; // Adding 1 because months are zero-based
-        const users = await client.db('SaveImages').collection('Images').find({ upload_time: selectedDate }).toArray();
+        const { startDate, endDate } = req.query;
 
+        if (!startDate && !endDate) {
+            return res.status(400).send('Please provide at least one date.');
+        }
+
+        let query = {};
+        if (startDate && endDate) {
+            query.upload_time = { $gte: startDate, $lte: endDate };
+        } else if (startDate) {
+            query.upload_time = startDate;
+        } else if (endDate) {
+            query.upload_time = endDate;
+        }
+
+        query.image = { $exists: true, $ne: null };
+
+        const users = await client.db('SaveImages').collection('Images').find(query).toArray();
         const base64Values = users.map((user) => user.image);
+
         res.status(200).send(base64Values);
 
-        // Save count to a collection for this month
-        const count = users.length;
+        // Save count to a collection for the month of the start date
+        const start = new Date(startDate || endDate);
+        const month = start.getMonth() + 1;
         const monthName = getMonthName(month);
+        const count = users.length;
 
         const countCollection = client.db('SaveImages').collection(monthName);
-        const existingCount = await countCollection.findOne({ date: selectedDate });
+        const existingCount = await countCollection.findOne({ date: startDate || endDate });
 
         if (existingCount) {
-            await countCollection.updateOne({ date: selectedDate }, { $set: { count } });
+            await countCollection.updateOne({ date: startDate || endDate }, { $set: { count } });
         } else {
-            await countCollection.insertOne({ date: selectedDate, count });
+            await countCollection.insertOne({ date: startDate || endDate, count });
         }
     } finally {
         await client.close();
     }
 });
+
+
+
 
 function getMonthName(month) {
     const months = [
@@ -113,6 +163,61 @@ function getMonthName(month) {
 // });
 
 
+// app.get('/getcntDay/:date', async (req, res) => {
+//     const client = new MongoClient(uri);
+//     await client.connect();
+
+//     try {
+//         const selectedDate = req.params.date;
+//         const month = new Date(selectedDate).getMonth() + 1;
+//         const monthName = getMonthName(month);
+
+//         const countCollection = client.db('SaveImages').collection('Images');
+
+//         // ค้นหาข้อมูลใน collection สำหรับวันที่ระบุ
+//         const totalCounts = await countCollection.aggregate([
+//             {
+//                 $match: {
+//                     upload_time: selectedDate
+//                 }
+//             },
+//             {
+//                 $group: {
+//                     _id: null,
+//                     totalNoHelmet: {
+//                         $sum: "$count_no_helmet"
+//                     },
+//                     totalRider: {
+//                         $sum: "$count_rider"
+//                     }
+//                 }
+//             }
+//         ]).toArray();
+
+//         if (totalCounts.length === 0) {
+//             // หากไม่มีข้อมูล ให้เพิ่มข้อมูลลงไป
+//             await countCollection.insertOne({
+//                 upload_time: selectedDate,
+//                 count_no_helmet: 0,
+//                 count_rider: 0
+//             });
+
+//             // ส่งค่า 0 กลับเมื่อไม่มีข้อมูล
+//             res.status(200).send([0, 0]);
+//         } else {
+//             res.status(200).send([
+//                 totalCounts[0].totalNoHelmet,
+//                 totalCounts[0].totalRider
+//             ]);
+//         }
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).send('เกิดข้อผิดพลาด');
+//     } finally {
+//         await client.close();
+//     }
+// });
+
 app.get('/getcntDay/:date', async (req, res) => {
     const client = new MongoClient(uri);
     await client.connect();
@@ -128,7 +233,8 @@ app.get('/getcntDay/:date', async (req, res) => {
         const totalCounts = await countCollection.aggregate([
             {
                 $match: {
-                    upload_time: selectedDate
+                    upload_time: selectedDate,
+                    image: { $exists: true, $ne: null } // กรองเฉพาะเอกสารที่มี image
                 }
             },
             {
@@ -204,7 +310,8 @@ app.get('/getcntMonths/:month', async (req, res) => {
             {
                 $match: {
                     // ใช้ regex เพื่อค้นหาข้อมูลที่มี upload_time ตรงกับเดือนที่เลือก
-                    upload_time: new RegExp(`^2024-${monthNum}`)
+                    upload_time: new RegExp(`^2024-${monthNum}`),
+                    image: { $exists: true, $ne: null }
                 }
             },
             {

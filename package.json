@@ -1,7 +1,6 @@
 {
   "name": "myweb",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "dev": "concurrently \"tailwindcss -i ./src/input.css -o ./public/style.css --watch\" \"nodemon index.js\"",
@@ -20,7 +19,11 @@
     "ejs": "^3.1.9",
     "express": "^4.19.2",
     "flowbite": "^2.3.0",
-    "jimp": "^0.22.12",
-    "mongodb": "^6.5.0"
-  }
+    "jimp": "^0.3.11",
+    "mongodb": "^6.5.0",
+    "nodemon": "^3.1.0",
+    "request": "^2.88.2"
+  },
+  "keywords": [],
+  "description": ""
 }
