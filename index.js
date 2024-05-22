@@ -26,7 +26,7 @@ app.get('/', (req, res) => {
 //     try {
 //         const selectedDate = req.params.date;
 //         const month = new Date(selectedDate).getMonth() + 1; // Adding 1 because months are zero-based
-//         const users = await client.db('SaveImages').collection('Images').find({ upload_time: selectedDate }).toArray();
+//         const users = await client.db('SaveImages').collection('Images').find({ upload_date: selectedDate }).toArray();
 
 //         const base64Values = users.map((user) => user.image);
 //         res.status(200).send(base64Values);
@@ -120,7 +120,7 @@ function getMonthName(month) {
 //         const totalCounts = await countCollection.aggregate([
 //             {
 //                 $match: {
-//                     upload_time: selectedDate
+//                     upload_date: selectedDate
 //                 }
 //             },
 //             {
@@ -139,7 +139,7 @@ function getMonthName(month) {
 //         if (totalCounts.length === 0) {
 //             // หากไม่มีข้อมูล ให้เพิ่มข้อมูลลงไป
 //             await countCollection.insertOne({
-//                 upload_time: selectedDate,
+//                 upload_date: selectedDate,
 //                 count_no_helmet: 0,
 //                 count_rider: 0
 //             });
@@ -178,7 +178,7 @@ function getMonthName(month) {
 //         const totalCounts = await countCollection.aggregate([
 //             {
 //                 $match: {
-//                     upload_time: selectedDate
+//                     upload_date: selectedDate
 //                 }
 //             },
 //             {
@@ -197,7 +197,7 @@ function getMonthName(month) {
 //         if (totalCounts.length === 0) {
 //             // หากไม่มีข้อมูล ให้เพิ่มข้อมูลลงไป
 //             await countCollection.insertOne({
-//                 upload_time: selectedDate,
+//                 upload_date: selectedDate,
 //                 count_no_helmet: 0,
 //                 count_rider: 0
 //             });
@@ -233,7 +233,7 @@ app.get('/getcntDay/:date', async (req, res) => {
         const totalCounts = await countCollection.aggregate([
             {
                 $match: {
-                    upload_time: selectedDate,
+                    upload_date: selectedDate,
                     image: { $exists: true, $ne: null } // กรองเฉพาะเอกสารที่มี image
                 }
             },
@@ -253,7 +253,7 @@ app.get('/getcntDay/:date', async (req, res) => {
         if (totalCounts.length === 0) {
             // หากไม่มีข้อมูล ให้เพิ่มข้อมูลลงไป
             await countCollection.insertOne({
-                upload_time: selectedDate,
+                upload_date: selectedDate,
                 count_no_helmet: 0,
                 count_rider: 0
             });
@@ -309,8 +309,8 @@ app.get('/getcntMonths/:month', async (req, res) => {
         const totalCounts = await countCollection.aggregate([
             {
                 $match: {
-                    // ใช้ regex เพื่อค้นหาข้อมูลที่มี upload_time ตรงกับเดือนที่เลือก
-                    upload_time: new RegExp(`^2024-${monthNum}`),
+                    // ใช้ regex เพื่อค้นหาข้อมูลที่มี upload_date ตรงกับเดือนที่เลือก
+                    upload_date: new RegExp(`^2024-${monthNum}`),
                     image: { $exists: true, $ne: null }
                 }
             },
@@ -383,7 +383,7 @@ app.listen(port, () => {
 
 //    try {
 //      const selectedDate = req.params.date;
-//      const users = await client.db('SaveImages').collection('Images').find({ upload_time: selectedDate }).toArray();
+//      const users = await client.db('SaveImages').collection('Images').find({ upload_date: selectedDate }).toArray();
 
 //      const base64Values = users.map((user) => user.image);
 //      res.status(200).send(base64Values);
