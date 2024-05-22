@@ -61,11 +61,11 @@ app.get('/getdate', async (req, res) => {
 
         let query = {};
         if (startDate && endDate) {
-            query.upload_time = { $gte: startDate, $lte: endDate };
+            query.upload_date = { $gte: startDate, $lte: endDate };
         } else if (startDate) {
-            query.upload_time = startDate;
+            query.upload_date = startDate;
         } else if (endDate) {
-            query.upload_time = endDate;
+            query.upload_date = endDate;
         }
 
         query.image = { $exists: true, $ne: null };
